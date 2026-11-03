@@ -11,75 +11,135 @@ st.set_page_config(page_title="ChemiLab | Virtual Laboratory", page_icon="🧪",
 # -------------------- Styling --------------------
 st.markdown("""
 <style>
-    /* Global black background and white typography */
+    /* Light-blue application theme with black typography */
+    :root {
+        --lab-blue: #dff3ff;
+        --lab-blue-deep: #bfe7fa;
+        --lab-blue-accent: #79c4e8;
+        --lab-ink: #10212b;
+        --lab-border: #8dbbd1;
+    }
     .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-        background: #000000 !important;
-        color: #ffffff !important;
+        background: var(--lab-blue) !important;
+        color: var(--lab-ink) !important;
     }
-    [data-testid="stHeader"] { background: #000000 !important; }
+    [data-testid="stHeader"] { background: var(--lab-blue) !important; }
     [data-testid="stSidebar"], [data-testid="stSidebar"] > div {
-        background: #080808 !important;
-        color: #ffffff !important;
+        background: #c9ebfb !important;
+        color: var(--lab-ink) !important;
     }
-    .block-container {padding-top: 1.5rem; padding-bottom: 3rem; max-width: 1250px;}
+    .block-container {
+        padding-top: 1.5rem;
+        padding-bottom: 7rem;
+        max-width: 1250px;
+    }
     h1, h2, h3, h4, h5, h6, p, label, span, li, small,
     [data-testid="stMarkdownContainer"], [data-testid="stCaptionContainer"] {
-        color: #ffffff;
+        color: var(--lab-ink);
     }
-    .hero {padding: 1.6rem 1.8rem; border-radius: 18px; color: white;
-           background: linear-gradient(120deg,#080808,#202020); border: 1px solid #555555;}
-    .hero h1 {font-size: 2.25rem; margin: 0 0 .35rem 0; color: #ffffff;}
-    .hero p {margin: 0; color: #eeeeee;}
-    .small-muted {color: #dddddd; font-size: .9rem;}
+    .hero {
+        padding: 1.6rem 1.8rem;
+        border-radius: 18px;
+        color: var(--lab-ink);
+        background: linear-gradient(120deg, #b8e5fa, #eaf8ff);
+        border: 1px solid var(--lab-border);
+        box-shadow: 0 5px 18px rgba(35, 102, 135, .10);
+    }
+    .hero h1 { font-size: 2.25rem; margin: 0 0 .35rem 0; color: #10212b; }
+    .hero p { margin: 0; color: #243f4d; }
+    .small-muted { color: #365665; font-size: .9rem; }
 
-    /* Inputs, dropdowns, text areas and form fields */
+    /* Inputs and dropdowns */
     .stTextInput input, .stTextArea textarea, .stNumberInput input,
     .stDateInput input, .stTimeInput input {
-        background: #000000 !important;
-        color: #ffffff !important;
-        border: 1px solid #ffffff !important;
-        caret-color: #ffffff !important;
+        background: #f7fcff !important;
+        color: #10212b !important;
+        border: 1px solid #78aec8 !important;
+        caret-color: #10212b !important;
     }
     .stTextInput input::placeholder, .stTextArea textarea::placeholder,
-    .stNumberInput input::placeholder { color: #bbbbbb !important; }
+    .stNumberInput input::placeholder { color: #607d8b !important; }
     [data-baseweb="select"] > div, [data-baseweb="popover"],
     [data-baseweb="menu"], [role="listbox"] {
-        background: #000000 !important;
-        color: #ffffff !important;
-        border-color: #ffffff !important;
+        background: #f7fcff !important;
+        color: #10212b !important;
+        border-color: #78aec8 !important;
     }
-    [data-baseweb="select"] *, [role="option"] {
-        color: #ffffff !important;
-    }
-    [role="option"]:hover, [aria-selected="true"] {
-        background: #292929 !important;
-    }
+    [data-baseweb="select"] *, [role="option"] { color: #10212b !important; }
+    [role="option"]:hover, [aria-selected="true"] { background: #c9ebfb !important; }
 
-    /* Buttons, metrics, expanders and data containers */
+    /* Buttons, cards, metrics and tables */
     .stButton button, .stDownloadButton button, [data-testid="stFormSubmitButton"] button {
-        background: #111111 !important;
-        color: #ffffff !important;
-        border: 1px solid #ffffff !important;
+        background: #b8e5fa !important;
+        color: #10212b !important;
+        border: 1px solid #579cbd !important;
+        border-radius: 9px !important;
+        font-weight: 600 !important;
     }
     .stButton button:hover, .stDownloadButton button:hover {
-        background: #303030 !important;
-        border-color: #ffffff !important;
-        color: #ffffff !important;
+        background: #91d2f0 !important;
+        border-color: #347e9f !important;
+        color: #10212b !important;
     }
     div[data-testid="stMetric"], [data-testid="stExpander"],
     [data-testid="stDataFrame"], [data-testid="stTable"] {
-        background: #080808 !important;
-        color: #ffffff !important;
-        border: 1px solid #555555 !important;
+        background: #eff9ff !important;
+        color: #10212b !important;
+        border: 1px solid #9ac9df !important;
         border-radius: 12px;
     }
     [data-testid="stExpander"] summary, [data-testid="stExpander"] details {
-        background: #080808 !important;
-        color: #ffffff !important;
+        background: #eff9ff !important;
+        color: #10212b !important;
     }
-    [data-testid="stAlert"] { color: #ffffff !important; }
-    [data-testid="stAlert"] p { color: #ffffff !important; }
-    hr { border-color: #555555 !important; }
+    [data-testid="stAlert"] { color: #10212b !important; }
+    [data-testid="stAlert"] p { color: #10212b !important; }
+    hr { border-color: #9ac9df !important; }
+
+    /* Fixed bottom navigation bar */
+    .st-key-bottom_navigation {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 999999 !important;
+        width: 100vw !important;
+        box-sizing: border-box !important;
+        padding: .55rem 1rem .7rem !important;
+        margin: 0 !important;
+        background: #b8e5fa !important;
+        border-top: 1px solid #6faecb !important;
+        box-shadow: 0 -4px 16px rgba(26, 82, 108, .14) !important;
+    }
+    .st-key-bottom_navigation [data-testid="stRadio"] { width: 100%; }
+    .st-key-bottom_navigation [role="radiogroup"] {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: .25rem .5rem !important;
+    }
+    .st-key-bottom_navigation [role="radiogroup"] label {
+        color: #10212b !important;
+        background: transparent !important;
+        border-radius: 9px !important;
+        padding: .25rem .55rem !important;
+        font-weight: 600 !important;
+    }
+    .st-key-bottom_navigation [role="radiogroup"] label:has(input:checked) {
+        background: #83cbed !important;
+        outline: 1px solid #579cbd !important;
+    }
+    .st-key-bottom_navigation [role="radiogroup"] label p,
+    .st-key-bottom_navigation [role="radiogroup"] label span {
+        color: #10212b !important;
+    }
+    @media (max-width: 700px) {
+        .st-key-bottom_navigation { padding: .4rem .25rem .55rem !important; }
+        .st-key-bottom_navigation [role="radiogroup"] { gap: .1rem .2rem !important; }
+        .st-key-bottom_navigation [role="radiogroup"] label { padding: .2rem .3rem !important; font-size: .78rem !important; }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -201,17 +261,20 @@ def make_pdf(title, records):
     doc.build(story)
     return buf.getvalue()
 
-# -------------------- Sidebar --------------------
-st.sidebar.markdown("## 🧪 ChemiLab")
-# Add breathing room so the navigation menu sits lower in the sidebar.
-st.sidebar.markdown("<div style='height: 34px;'></div>", unsafe_allow_html=True)
-page = st.sidebar.radio("Navigation", [
-    "🏠 Home", "📖 Theory", "🧬 Molecular Visualization",
-    "📊 Molecular Properties Report", "📈 Structure–Property Analysis",
-    "📝 Assessment", "📄 Final Project Report"
-])
-st.sidebar.divider()
-st.sidebar.caption("Learning: SMILES • 2D/3D structures • descriptors • molecular comparison")
+# -------------------- Fixed bottom navigation --------------------
+NAV_PAGES = [
+    "🏠 Home", "📖 Theory", "🧬 Visualization", "📊 Properties",
+    "📈 Analysis", "📝 Assessment", "📄 Final Report"
+]
+with st.container(key="bottom_navigation"):
+    page = st.radio(
+        "Navigation",
+        NAV_PAGES,
+        horizontal=True,
+        label_visibility="collapsed",
+        key="bottom_navigation_radio"
+    )
+# Keep the full page content clear of the fixed navigation bar.
 
 if "smiles" not in st.session_state:
     st.session_state.smiles = EXAMPLES["Ethanol"]
@@ -267,7 +330,7 @@ elif page == "📖 Theory":
     with st.expander("3D molecular models"):
         st.markdown("- **Ball and stick:** atoms are spheres and bonds are sticks.\n- **Stick:** emphasizes bonds.\n- **Space filling:** shows approximate molecular volume.\n- **Wireframe:** gives a simple line representation.")
 
-elif page == "🧬 Molecular Visualization":
+elif page == "🧬 Visualization":
     st.title("🧬 Molecular Visualization Laboratory")
     st.caption("Enter a SMILES string or load an example molecule.")
     mol = show_molecule_input()
@@ -307,7 +370,7 @@ elif page == "🧬 Molecular Visualization":
                     except ImportError:
                         st.warning("Install py3Dmol to enable interactive 3D viewing. The 2D structure is available above.")
 
-elif page == "📊 Molecular Properties Report":
+elif page == "📊 Properties":
     st.title("📊 Molecular Properties Report")
     mol = show_molecule_input()
     if mol is not None:
@@ -326,7 +389,7 @@ elif page == "📊 Molecular Properties Report":
                        [("Molecule", st.session_state.smiles, mol, props)])
         st.download_button("⬇️ Download properties (PDF)", pdf, "molecular_properties_report.pdf", "application/pdf")
 
-elif page == "📈 Structure–Property Analysis":
+elif page == "📈 Analysis":
     st.title("📈 Structure–Property Analysis")
     st.write("Compare multiple molecules. Enter one molecule per line using: **Molecule name,SMILES**")
     default = "\n".join([f"{name},{smiles}" for name,smiles in list(EXAMPLES.items())[:5]])
@@ -400,7 +463,7 @@ elif page == "📝 Assessment":
                     st.write(f"Correct answer: {correct}")
                     st.divider()
 
-elif page == "📄 Final Project Report":
+elif page == "📄 Final Report":
     st.title("📄 Final Project Report")
     st.write("Generate a report for one or more molecules, including 2D structures and calculated properties.")
     report_text = st.text_area("Enter molecules (one per line: Name,SMILES)",
