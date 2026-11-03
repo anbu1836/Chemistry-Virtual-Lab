@@ -160,7 +160,7 @@ def make_3d(mol):
             pass
     return m
 
-def make_pdf(title, student, regno, records):
+def make_pdf(title, records):
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -174,10 +174,7 @@ def make_pdf(title, student, regno, records):
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name="LabTitle", parent=styles["Title"], alignment=TA_CENTER,
                               textColor=colors.HexColor("#17365D"), fontSize=19))
-    story = [Paragraph(title, styles["LabTitle"]), Spacer(1, 8*mm),
-             Paragraph(f"<b>Student:</b> {html.escape(student or 'Not provided')} &nbsp;&nbsp; "
-                       f"<b>Registration:</b> {html.escape(regno or 'Not provided')}", styles["BodyText"]),
-             Spacer(1, 6*mm)]
+    story = [Paragraph(title, styles["LabTitle"]), Spacer(1, 8*mm)]
     for idx, (name, smiles, mol, props) in enumerate(records):
         if idx:
             story.append(PageBreak())
@@ -206,14 +203,14 @@ def make_pdf(title, student, regno, records):
 
 # -------------------- Sidebar --------------------
 st.sidebar.markdown("## 🧪 ChemiLab")
+# Add breathing room so the navigation menu sits lower in the sidebar.
+st.sidebar.markdown("<div style='height: 34px;'></div>", unsafe_allow_html=True)
 page = st.sidebar.radio("Navigation", [
     "🏠 Home", "📖 Theory", "🧬 Molecular Visualization",
     "📊 Molecular Properties Report", "📈 Structure–Property Analysis",
     "📝 Assessment", "📄 Final Project Report"
 ])
 st.sidebar.divider()
-student_name = st.sidebar.text_input("Student name")
-registration_number = st.sidebar.text_input("Registration number")
 st.sidebar.caption("Learning: SMILES • 2D/3D structures • descriptors • molecular comparison")
 
 if "smiles" not in st.session_state:
@@ -325,7 +322,7 @@ elif page == "📊 Molecular Properties Report":
         st.dataframe(df, use_container_width=True, hide_index=True)
         csv = df.to_csv(index=False).encode("utf-8")
         st.download_button("⬇️ Download properties (CSV)", csv, "molecular_properties.csv", "text/csv")
-        pdf = make_pdf("MOLECULAR PROPERTIES REPORT", student_name, registration_number,
+        pdf = make_pdf("MOLECULAR PROPERTIES REPORT",
                        [("Molecule", st.session_state.smiles, mol, props)])
         st.download_button("⬇️ Download properties (PDF)", pdf, "molecular_properties_report.pdf", "application/pdf")
 
@@ -362,7 +359,7 @@ elif page == "📈 Structure–Property Analysis":
         st.subheader("Compare a property")
         metric = st.selectbox("Choose property", ["MW", "LogP", "TPSA", "HBD", "HBA", "Rings"])
         st.bar_chart(df.set_index("Molecule")[[metric]])
-        pdf = make_pdf("MULTI-MOLECULE ANALYSIS REPORT", student_name, registration_number, records)
+        pdf = make_pdf("MULTI-MOLECULE ANALYSIS REPORT", records)
         st.download_button("⬇️ Download combined PDF report", pdf, "multi_molecule_report.pdf", "application/pdf")
     else:
         st.info("Add at least one valid molecule to see a comparison.")
@@ -405,7 +402,7 @@ elif page == "📝 Assessment":
 
 elif page == "📄 Final Project Report":
     st.title("📄 Final Project Report")
-    st.write("Generate a report for one or more molecules, including student details, 2D structures and calculated properties.")
+    st.write("Generate a report for one or more molecules, including 2D structures and calculated properties.")
     report_text = st.text_area("Enter molecules (one per line: Name,SMILES)",
         value="Ethanol,CCO\nBenzene,c1ccccc1\nAspirin,CC(=O)Oc1ccccc1C(=O)O", height=150)
     records, issues = [], []
@@ -429,8 +426,7 @@ elif page == "📄 Final Project Report":
                                     "Molecular weight":p["Molecular Weight (g/mol)"]}
                                    for n,s,m,p in records]), use_container_width=True, hide_index=True)
         if st.button("Generate final PDF report", type="primary"):
-            pdf = make_pdf("CHEMINFORMATICS VIRTUAL LABORATORY — FINAL PROJECT REPORT",
-                           student_name, registration_number, records)
+            pdf = make_pdf("CHEMINFORMATICS VIRTUAL LABORATORY — FINAL PROJECT REPORT", records)
             st.download_button("⬇️ Download final project report", pdf,
                                "cheminformatics_final_project_report.pdf", "application/pdf")
     else:
